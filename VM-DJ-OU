@@ -1,3 +1,9 @@
+https://portal.azure.com/#create/Microsoft.Template/uri/
+https%3A%2F%2Fraw.githubusercontent.com%2FDeanCefola%2FAzure-WVD%2Fmaster%2FWVDTemplates%2FWVD-NewHost%2FWVD-NewHost.json
+
+https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFransNijskens%2FARMTemplates%2Fmain%2FVM-DJ-OU?token=ASPGBTI7EKRM5MJLI74LTZDAAF35Q
+
+
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
@@ -12,7 +18,7 @@
     "AdminPassword": {
       "type": "securestring"
     },
-    "Location": {
+    "vmLocation": {
       "type": "string"
     },
     "DomainFQDN": {
@@ -119,7 +125,7 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('VMName'),copyIndex(),'-nic')]",
       "apiVersion": "2018-10-01",
-      "location": "[parameters('location')]",
+      "Location": "[parameters('vmLocation')]",
       "copy": {
         "name": "WVDNic-Copy",
         "count": "[parameters('Instance')]"
@@ -150,7 +156,7 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('VMName'),copyIndex())]",
       "apiVersion": "2019-03-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('vmLocation')]",
       "copy": {
         "name": "WVD-Copy",
         "count": "[parameters('Instance')]"
@@ -207,7 +213,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('VMName'),copyIndex(), '/joinDomain')]",
       "apiVersion": "2015-06-15",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('vmLocation')]",
       "copy": {
         "name": "JoinDomain-Copy",
         "count": "[parameters('Instance')]"
@@ -239,7 +245,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('VMName'),copyIndex(),'/CustomScriptExtension')]",
       "apiVersion": "2015-06-15",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('vmLocation')]",
       "copy": {
         "name": "Script-Copy",
         "count": "[parameters('Instance')]"
