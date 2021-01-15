@@ -1,4 +1,3 @@
-
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
@@ -12,6 +11,9 @@
     },
     "AdminPassword": {
       "type": "securestring"
+    },
+    "Location": {
+      "type": "string"
     },
     "DomainFQDN": {
       "type": "string"
@@ -117,7 +119,7 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('VMName'),copyIndex(),'-nic')]",
       "apiVersion": "2018-10-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "copy": {
         "name": "WVDNic-Copy",
         "count": "[parameters('Instance')]"
