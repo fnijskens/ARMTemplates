@@ -1,7 +1,7 @@
 
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.1",
+  "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
       "type": "string",
@@ -262,6 +262,26 @@
       "dependsOn": [
         "JoinDomain-Copy"
       ]
+    },
+    {
+        "resources": [
+        {
+            "name": "[concat(parameters('vmName'),'/MicrosoftMonitoringAgent')]",
+            "type": "Microsoft.HybridCompute/machines/extensions",
+            "location": "[parameters('location')]",
+            "apiVersion": "2019-08-02-preview",
+            "properties": {
+                "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+                "type": "MicrosoftMonitoringAgent",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "workspaceId": "0127ea27-5c03-453d-a56a-4b6781c1697f"
+                },
+                "protectedSettings": {
+                    "workspaceKey": "4Gea1vTF/zgOvpwx0UssbvDGX0kGxIfaLOBtZ8EoooWItu8gM3g+gV+dghfxDnp0dpMcPBBiVFVF1Tl37msU9w=="
+                }
+            }
+        }
     }
   ],
   "outputs": {
