@@ -280,9 +280,12 @@
                 "protectedSettings": {
                     "workspaceKey": "4Gea1vTF/zgOvpwx0UssbvDGX0kGxIfaLOBtZ8EoooWItu8gM3g+gV+dghfxDnp0dpMcPBBiVFVF1Tl37msU9w=="
                 }
-            }
+            },
+
+                "dependsOn": [ 
+                "CustomScriptExtension"
+              ]
         }
-    
   ],
   "outputs": {
 
