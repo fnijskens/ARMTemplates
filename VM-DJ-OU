@@ -1,6 +1,5 @@
-
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
@@ -13,13 +12,7 @@
     "AdminPassword": {
       "type": "securestring"
     },
-    "vmLocation": {
-      "type": "string"
-    },
     "DomainFQDN": {
-      "type": "string"
-    },
-    "ouPath": {
       "type": "string"
     },
     "Instance": {
@@ -120,7 +113,7 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('VMName'),copyIndex(),'-nic')]",
       "apiVersion": "2018-10-01",
-      "Location": "[parameters('vmLocation')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "WVDNic-Copy",
         "count": "[parameters('Instance')]"
@@ -151,7 +144,7 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('VMName'),copyIndex())]",
       "apiVersion": "2019-03-01",
-      "location": "[parameters('vmLocation')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "WVD-Copy",
         "count": "[parameters('Instance')]"
@@ -208,7 +201,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('VMName'),copyIndex(), '/joinDomain')]",
       "apiVersion": "2015-06-15",
-      "location": "[parameters('vmLocation')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "JoinDomain-Copy",
         "count": "[parameters('Instance')]"
@@ -223,7 +216,6 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "Name": "[parameters('DomainFQDN')]",
-          "OUPath": "[parameters('ouPath')]",
           "User": "[variables('JoinUser')]",
           "Restart": "true",
           "Options": "3"
@@ -240,7 +232,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('VMName'),copyIndex(),'/CustomScriptExtension')]",
       "apiVersion": "2015-06-15",
-      "location": "[parameters('vmLocation')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "Script-Copy",
         "count": "[parameters('Instance')]"
@@ -262,30 +254,7 @@
       "dependsOn": [
         "JoinDomain-Copy"
       ]
-    },
- 
- 
-        {
-            "name": "[concat(variables('VMName'),copyIndex(),'/MicrosoftMonitoringAgent')]",
-            "type": "Microsoft.HybridCompute/machines/extensions",
-            "location": "[parameters('vmLocation')]",
-            "apiVersion": "2019-08-02-preview",
-            "properties": {
-                "publisher": "Microsoft.EnterpriseCloud.Monitoring",
-                "type": "MicrosoftMonitoringAgent",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "workspaceId": "0127ea27-5c03-453d-a56a-4b6781c1697f"
-                },
-                "protectedSettings": {
-                    "workspaceKey": "4Gea1vTF/zgOvpwx0UssbvDGX0kGxIfaLOBtZ8EoooWItu8gM3g+gV+dghfxDnp0dpMcPBBiVFVF1Tl37msU9w=="
-                }
-            },
-
-                "dependsOn": [ 
-                "CustomScriptExtension-Copy"
-              ]
-        }
+    }
   ],
   "outputs": {
 
