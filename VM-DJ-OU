@@ -263,9 +263,10 @@
         "JoinDomain-Copy"
       ]
     },
-     
+ 
+ 
         {
-            "name": "[concat(parameters('VMName'),'/MicrosoftMonitoringAgent')]",
+            "name": "[concat(variables('VMName'),copyIndex(),'/MicrosoftMonitoringAgent')]",
             "type": "Microsoft.HybridCompute/machines/extensions",
             "location": "[parameters('location')]",
             "apiVersion": "2019-08-02-preview",
@@ -281,6 +282,7 @@
                 }
             }
         }
+    
   ],
   "outputs": {
 
