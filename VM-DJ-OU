@@ -1,6 +1,6 @@
 
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "Prefix": {
@@ -268,7 +268,7 @@
         {
             "name": "[concat(variables('VMName'),copyIndex(),'/MicrosoftMonitoringAgent')]",
             "type": "Microsoft.HybridCompute/machines/extensions",
-            "location": "[parameters('location')]",
+            "location": "[parameters('vmLocation')]",
             "apiVersion": "2019-08-02-preview",
             "properties": {
                 "publisher": "Microsoft.EnterpriseCloud.Monitoring",
