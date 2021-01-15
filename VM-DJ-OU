@@ -283,7 +283,7 @@
             },
 
                 "dependsOn": [ 
-                "CustomScriptExtension"
+                "CustomScriptExtension-Copy"
               ]
         }
   ],
