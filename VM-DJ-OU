@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.1",
+  "contentVersion": "1.0.0.2",
   "parameters": {
     "Prefix": {
       "type": "string",
@@ -262,34 +262,8 @@
       "dependsOn": [
         "JoinDomain-Copy"
       ]
-    },
-    {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('VMName'),copyIndex(),'/MicrosoftMonitoringAgent')]",
-            "location": "[parameters('vmLocation')]",
-            "apiVersion": "2015-06-15",
-
-            "copy": {
-                "name": "CustomScriptExtension-Copy",
-                "count": "[parameters('Instance')]"
-              },
-            "properties": {
-                "publisher": "Microsoft.EnterpriseCloud.Monitoring",
-                "type": "MicrosoftMonitoringAgent",
-                "typeHandlerVersion": "1.9",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "workspaceId": "0127ea27-5c03-453d-a56a-4b6781c1697f"
-                },
-                "protectedSettings": {
-                    "workspaceKey": "4Gea1vTF/zgOvpwx0UssbvDGX0kGxIfaLOBtZ8EoooWItu8gM3g+gV+dghfxDnp0dpMcPBBiVFVF1Tl37msU9w=="
-                }
-            },
-
-                "dependsOn": [ 
-                "Script-Copy"
-              ]
-        }
+    }
+     
   ],
   "outputs": {
 
