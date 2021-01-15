@@ -1,9 +1,3 @@
-https://portal.azure.com/#create/Microsoft.Template/uri/
-https%3A%2F%2Fraw.githubusercontent.com%2FDeanCefola%2FAzure-WVD%2Fmaster%2FWVDTemplates%2FWVD-NewHost%2FWVD-NewHost.json
-
-https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FFransNijskens%2FARMTemplates%2Fmain%2FVM-DJ-OU?token=ASPGBTI7EKRM5MJLI74LTZDAAF35Q
-
-
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
