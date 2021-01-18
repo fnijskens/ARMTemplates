@@ -107,7 +107,7 @@
       }
     },
     "VM_SIZES": {
-      "Small": {
+      "Small": { 
         "WVDsize": "Standard_B2ms"
       },
       "Medium": {
