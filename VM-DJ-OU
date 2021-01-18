@@ -106,7 +106,7 @@
         "version": "latest"
       }
     },
-    "VM_SIZES": {
+    "VM_SIZES": { 
       "Small": { 
         "WVDsize": "Standard_B2ms"
       },
