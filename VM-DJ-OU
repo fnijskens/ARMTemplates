@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.6", 
+  "contentVersion": "1.0.1.5", 
   "parameters": {
     "Prefix": {
       "type": "string",
@@ -287,8 +287,8 @@
       ]
     },
         {
-          "type": "extensions",
-          "name": "[concat(variables('VMName'),copyIndex(),'/Monitoring')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('VMName'),copyIndex(),'/MicrosoftMonitoringAgent')]",          
           "apiVersion": "2015-06-15",
           "location": "[parameters('vmLocation')]",
 	  "copy": {
