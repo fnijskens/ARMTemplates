@@ -74,7 +74,20 @@
         false
       ],
       "defaultValue": "true"
+    },
+       "workspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "0127ea27-5c03-453d-a56a-4b6781c1697f"
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+         "description": "WVDmonitoring2021"
+      }
     }
+    
   },
   "variables": {
     "VM_Images": {
@@ -270,7 +283,28 @@
       "dependsOn": [
         "JoinDomain-Copy"
       ]
-    }
+    },
+        {
+          "type": "extensions",
+          "name": "Microsoft.EnterpriseCloud.Monitoring",
+          "apiVersion": "2015-06-15",
+          "location": "[parameters('vmLocation')]",
+          "dependsOn": [
+            "[Script-Copy]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+            "type": "MicrosoftMonitoringAgent",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+			  "workspaceId": "[parameters('workspaceId')]"
+            },
+            "protectedSettings": {
+			  "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2015-03-20').primarySharedKey]"
+            }
+          }
+        }
      
   ],
   "outputs": {
