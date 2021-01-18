@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.5", 
+  "contentVersion": "1.0.1.6", 
   "parameters": {
     "Prefix": {
       "type": "string",
@@ -310,6 +310,24 @@
 			  "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2015-03-20').primarySharedKey]"
             }
           }
+        },
+	   {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('VMName'),copyIndex(),'/DependencyAgent')]",
+            "apiVersion": "2017-03-30",
+            "location": "[parameters('vmLocation')]",
+	  "copy": {
+          "name": "DependencyAgent",
+          "count": "[parameters('Instance')]"
+	  },
+          "dependsOn": [
+            "LogAgent"
+          ],            "properties": {
+                "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
+                "type": "DependencyAgentWindows",
+                "typeHandlerVersion": "9.3",
+                "autoUpgradeMinorVersion": true
+            }
         }
      
   ],
