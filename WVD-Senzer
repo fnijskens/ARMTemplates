@@ -1,10 +1,17 @@
+
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.3", 
+  "contentVersion": "1.0.1.5", 
   "parameters": {
     "Prefix": {
       "type": "string",
-      "defaultValue": "Test-01"
+      "defaultValue": "Test01"
+    },
+       "VMNumber": {
+      "type": "int",
+       "minValue": 3,
+      "maxValue": 99,
+     "defaultValue": 3
     },
     "AdminUserName": {
       "type": "string"
@@ -16,6 +23,13 @@
       "type": "string",
      "defaultValue": "westeurope"
     },
+    "JoinUserName": {
+      "type": "string"
+    },
+    "JoinPassword": {
+      "type": "securestring"
+    },
+
     "DomainFQDN": {
       "type": "string",
      "defaultValue": "atlant.local"
@@ -46,12 +60,6 @@
         "Medium",
         "Large"
       ]
-    },
-   "VMNumber": {
-      "type": "int",
-       "minValue": 3,
-      "maxValue": 99,
-     "defaultValue": 3
     },
       "VnetRgName": {
       "type": "string",
@@ -135,7 +143,7 @@
     },
     "VMName": "[concat(parameters('Prefix'),'-')]",
     "subnetRef": "[concat(subscription().id,'/resourceGroups/',parameters('VnetRgName'),'/providers/Microsoft.Network/virtualNetworks/', parameters('VnetName'),'/subnets/', parameters('subnetName'))]",
-    "JoinUser": "[concat(parameters('adminUsername'),'@',parameters('DomainFQDN'))]",
+    "JoinUser": "[concat(parameters('JoinUsername'),'@',parameters('DomainFQDN'))]",
     "fileUris": "https://raw.githubusercontent.com/DeanCefola/Azure-WVD/master/PowerShell/New-WVDSessionHost.ps1",
     "UriFileNamePieces": "[split(variables('fileUris'), '/')]",
     "firstFileNameString": "[variables('UriFileNamePieces')[sub(length(variables('UriFileNamePieces')), 1)]]",
@@ -257,7 +265,7 @@
           "Options": "3"
         },
         "protectedSettings": {
-          "Password": "[parameters('adminPassword')]"
+          "Password": "[parameters('JoinPassword')]"
         }
       },
       "dependsOn": [
