@@ -1,8 +1,10 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.5", 
+  "contentVersion": "1.0.1.6", 
+  
   "parameters": {
+  	
     "Prefix": {
       "type": "string",
       "defaultValue": "Test01"
@@ -23,13 +25,13 @@
       "type": "string",
      "defaultValue": "westeurope"
     },
+
     "JoinUserName": {
       "type": "string"
     },
     "JoinPassword": {
       "type": "securestring"
     },
-
     "DomainFQDN": {
       "type": "string",
      "defaultValue": "atlant.local"
@@ -88,6 +90,13 @@
       ],
       "defaultValue": "true"
     },
+       "workspaceRG": {
+      "type": "string",
+        "defaultValue": "wvd-monitoring-rg",
+      "metadata": {
+       "description": "workspace Resource Group"
+      }
+    
        "workspaceId": {
       "type": "string",
         "defaultValue": "02699eb4-2e76-48e4-8410-a634b234606a",
@@ -317,8 +326,8 @@
             "typeHandlerVersion": "1.0",
             "autoUpgradeMinorVersion": true,
             "settings": {
-			  "workspaceId": "[parameters('workspaceId')]"
-            },
+            "workspaceId": "[reference(resourceId(parameters('workspaceRG'), 'Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-03-20').customerId]"
+	          },
             "protectedSettings": {
 			  "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2015-03-20').primarySharedKey]"
             }
