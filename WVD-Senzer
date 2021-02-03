@@ -29,7 +29,7 @@
     "JoinUserName": {
       "type": "string"
     },
-    "JoinPassword": {
+    "JoinPassword": { 
       "type": "securestring"
     },
     "DomainFQDN": {
