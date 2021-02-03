@@ -41,7 +41,7 @@
     },
     "VMSize": {
       "type": "string",
-      "defaultValue": "Small  ",
+      "defaultValue": "Small",
       "allowedValues": [
         "Small",
         "Medium",
@@ -52,7 +52,7 @@
       "type": "int",
        "minValue": 3,
       "maxValue": 99,
-     "defaultValue": "3"
+     "defaultValue": 3
     },
       "VnetRgName": {
       "type": "string",
