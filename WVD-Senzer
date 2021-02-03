@@ -147,7 +147,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('VMName'),concat(variables('VMNumber'),'-nic')]",
+      "name": "[concat(variables('VMName'),variables('VMNumber'),'-nic')]",
       "apiVersion": "2018-10-01",
       "Location": "[parameters('vmLocation')]",
       "copy": {
@@ -178,7 +178,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('VMName'),concat(variables('VMNumber'))]",
+      "name": "[concat(variables('VMName'),variables('VMNumber'))]",
       "apiVersion": "2019-03-01",
       "location": "[parameters('vmLocation')]",
       "copy": {
@@ -195,7 +195,7 @@
         },
         "storageProfile": {
           "osDisk": {
-            "name": "[concat(variables('VMName'),concat(variables('VMNumber'),'-OSDisk')]",
+            "name": "[concat(variables('VMName'),variables('VMNumber'),'-OSDisk')]",
             "createOption": "FromImage",
             "managedDisk": {
               "storageAccountType": "StandardSSD_LRS"
@@ -211,12 +211,12 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('VMName'),concat(variables('VMNumber'),'-nic'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('VMName'),variables('VMNumber'),'-nic'))]"
             }
           ]
         },
         "osProfile": {
-          "computerName": "[concat(variables('VMName'),concat(variables('VMNumber'))]",
+          "computerName": "[concat(variables('VMName'),variables('VMNumber'))]",
           "adminUsername": "[parameters('AdminUserName')]",
           "adminPassword": "[parameters('AdminPassword')]",
           "windowsConfiguration": {
@@ -235,7 +235,7 @@
     },    
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('VMName'),concat(variables('VMNumber'), '/joinDomain')]",
+      "name": "[concat(variables('VMName'),variables('VMNumber'), '/joinDomain')]",
       "apiVersion": "2015-06-15",
       "location": "[parameters('vmLocation')]",
       "copy": {
@@ -267,7 +267,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('VMName'),concat(variables('VMNumber'),'/CustomScriptExtension')]",
+      "name": "[concat(variables('VMName'),variables('VMNumber'),'/CustomScriptExtension')]",
       "apiVersion": "2015-06-15",
       "location": "[parameters('vmLocation')]",
       "copy": {
@@ -294,7 +294,7 @@
     },
         {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('VMName'),concat(variables('VMNumber'),'/MicrosoftMonitoringAgent')]",          
+      "name": "[concat(variables('VMName'),variables('VMNumber'),'/MicrosoftMonitoringAgent')]",          
           "apiVersion": "2015-06-15",
           "location": "[parameters('vmLocation')]",
 	  "copy": {
@@ -319,7 +319,7 @@
         },
 	   {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('VMName'),concat(variables('VMNumber'),'/DependencyAgent')]",
+            "name": "[concat(variables('VMName'),variables('VMNumber'),'/DependencyAgent')]",
             "apiVersion": "2017-03-30",
             "location": "[parameters('vmLocation')]",
 	  "copy": {
