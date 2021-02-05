@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.11", 
+  "contentVersion": "1.0.1.12", 
   
   "parameters": {
   	
@@ -179,11 +179,11 @@
           {
             "name": "ipconfig1",
             "properties": {
-               "privateIPAllocationMethod": "Dynamic"
-            },
-             "subnet": {
+            	"subnet": {
                 "id": "[variables('subnetRef')]"
-              }
+              },
+               "privateIPAllocationMethod": "Dynamic"
+            }
           }
         ]
       },
