@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.7", 
+  "contentVersion": "1.0.1.8", 
   
   "parameters": {
   	
@@ -29,7 +29,7 @@
     "JoinUserName": {
       "type": "string"
     },
-    "JoinPassword": { 
+    "JoinPassword": {
       "type": "securestring"
     },
     "DomainFQDN": {
@@ -90,11 +90,11 @@
       ],
       "defaultValue": "true"
     },
-       "workspaceKey": {
+       "workspaceRG": {
       "type": "string",
-        "defaultValue": "p5PsnrEAgXkJUFYOOILE8NPV2cmOPd1gVmgEtqUXHppDVKN6ox9yApLtEYRXnjLgqJFRSD4OrgQKxemb0ciMog==",
+        "defaultValue": "wvd-monitoring-rg",
       "metadata": {
-       "description": "workspace key"
+       "description": "workspace Resource Group"
       }
     },
        "workspaceId": {
@@ -179,11 +179,11 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "subnet": {
+               "privateIPAllocationMethod": "Dynamic"
+            }
+             "subnet": {
                 "id": "[variables('subnetRef')]"
               },
-              "privateIPAllocationMethod": "Dynamic"
-            }
           }
         ]
       },
@@ -326,10 +326,10 @@
             "typeHandlerVersion": "1.0",
             "autoUpgradeMinorVersion": true,
             "settings": {
-            "workspaceId": "[parameters('workspaceId')]"
+            "workspaceId": "[reference(resourceId(parameters('workspaceRG'), 'Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-03-20').customerId]"
 	          },
             "protectedSettings": {
-			  "workspaceKey": "[parameters('workspaceKey')]"
+			  "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2015-03-20').primarySharedKey]"
             }
           }
         },
