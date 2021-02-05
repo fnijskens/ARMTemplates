@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.9", 
+  "contentVersion": "1.0.1.10", 
   
   "parameters": {
   	
@@ -90,9 +90,9 @@
       ],
       "defaultValue": "true"
     },
-       "workspaceRG": {
+       "workspaceKey": {
       "type": "string",
-        "defaultValue": "wvd-monitoring-rg",
+        "defaultValue": "p5PsnrEAgXkJUFYOOILE8NPV2cmOPd1gVmgEtqUXHppDVKN6ox9yApLtEYRXnjLgqJFRSD4OrgQKxemb0ciMog==",
       "metadata": {
        "description": "workspace Resource Group"
       }
@@ -326,10 +326,10 @@
             "typeHandlerVersion": "1.0",
             "autoUpgradeMinorVersion": true,
             "settings": {
-            "workspaceId": "[reference(resourceId(parameters('workspaceRG'), 'Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2015-03-20').customerId]"
+            "workspaceId": "[parameters('workspaceId')]"
 	          },
             "protectedSettings": {
-			  "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), '2015-03-20').primarySharedKey]"
+			  "workspaceKey": "[parameters('workspaceKey')]"
             }
           }
         },
