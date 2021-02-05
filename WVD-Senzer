@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.10", 
+  "contentVersion": "1.0.1.11", 
   
   "parameters": {
   	
@@ -151,7 +151,7 @@
       }
     },
     "VMName": "[concat(parameters('Prefix'),'-')]",
-    "subnetRef": "[concat(subscription().id,'/resourceGroups/',parameters('VnetRgName'),'/providers/Microsoft.Network/virtualNetworks/', parameters('VnetName'),'/subnets/', parameters('subnetName'))]",
+    "subnetRef": "[concat(subscription().id,'/resourceGroups/',parameters('VnetRgName'),'/providers/Microsoft.Network/virtualNetworks/', parameters('VnetName'),'/subnets/', parameters('SubnetName'))]",
     "JoinUser": "[concat(parameters('JoinUsername'),'@',parameters('DomainFQDN'))]",
     "fileUris": "https://raw.githubusercontent.com/DeanCefola/Azure-WVD/master/PowerShell/New-WVDSessionHost.ps1",
     "UriFileNamePieces": "[split(variables('fileUris'), '/')]",
