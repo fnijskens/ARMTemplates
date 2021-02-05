@@ -1,7 +1,7 @@
 
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.1.14", 
+  "contentVersion": "1.0.1.15", 
   
   "parameters": {
   	
@@ -133,10 +133,10 @@
         "WVDsize": "Standard_B2ms"
       },
       "Medium": {
-        "WVDsize": "Standard_DS4_v4"
+        "WVDsize": "Standard_D4s_v4"
       },
       "Large": {
-        "WVDsize": "Standard_DS8_v4"
+        "WVDsize": "Standard_D8s_v4"
       }
     },
     "License": {
