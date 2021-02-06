@@ -1,1 +1,359 @@
-v 
+
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.1.0", 
+  
+  "parameters": {
+  	
+    "Prefix": {
+      "type": "string",
+      "defaultValue": "Test01"
+    },
+       "VMNumber": {
+      "type": "int",
+       "minValue": 3,
+      "maxValue": 99,
+     "defaultValue": 3
+    },
+    "AdminUserName": {
+      "type": "string"
+    },
+    "AdminPassword": {
+      "type": "securestring"
+    },
+    "vmLocation": {
+      "type": "string",
+     "defaultValue": "westeurope"
+    },
+
+    "JoinUserName": {
+      "type": "string"
+    },
+    "JoinPassword": {
+      "type": "securestring"
+    },
+    "DomainFQDN": {
+      "type": "string",
+     "defaultValue": "atlant.local"
+    },
+    "ouPath": {
+      "type": "string",
+     "defaultValue": "OU=WVD,OU=Computers,OU=_Senzer 365,DC=Atlant,DC=Local"
+    },
+    "Instance": {
+      "type": "int",
+      "minValue": 1,
+      "maxValue": 99,
+      "defaultValue": 1
+    },
+    "OperatingSystem": {
+      "type": "string",
+      "defaultValue": "Client",
+      "allowedValues": [
+        "Server",
+        "Client"
+      ]
+    },
+    "VMSize": {
+      "type": "string",
+      "defaultValue": "Small",
+      "allowedValues": [
+        "Small",
+        "Medium",
+        "Large"
+      ]
+    },
+      "VnetRgName": {
+      "type": "string",
+     "defaultValue": "SRV-RG"
+    },
+    "VnetName": {
+      "type": "string",
+     "defaultValue": "network-vnet02"
+    },
+    "SubnetName": {
+      "type": "string",
+     "defaultValue": "WVD"
+    },
+    "ProfilePath": {
+      "type": "string",
+      "defaultValue": "\\\\wvdfslogixhost.file.core.windows.net\\fslogix"
+    },
+    "RegistrationToken": {
+      "type": "string"
+    },
+    "Optimize": {
+      "type": "bool",
+      "allowedValues": [
+        true,
+        false
+      ],
+      "defaultValue": "true"
+    },
+       "workspaceKey": {
+      "type": "string",
+        "defaultValue": "p5PsnrEAgXkJUFYOOILE8NPV2cmOPd1gVmgEtqUXHppDVKN6ox9yApLtEYRXnjLgqJFRSD4OrgQKxemb0ciMog==",
+      "metadata": {
+       "description": "workspace Resource Group"
+      }
+    },
+       "workspaceId": {
+      "type": "string",
+        "defaultValue": "02699eb4-2e76-48e4-8410-a634b234606a",
+      "metadata": {
+       "description": "workspace id"
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+         "defaultValue": "WVD-Monitoring-WVD",
+	 "metadata": {
+       "description": "workspaceName"
+      }
+    }
+    
+  },
+  "variables": {
+    "VM_Images": {
+      "Server": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2019-Datacenter-smalldisk",
+        "version": "latest"
+      },
+      "Client": {
+        "publisher": "microsoftwindowsdesktop",
+        "offer": "office-365",
+        "sku": "20h1-evd-o365pp",
+        "version": "latest"
+      }
+    },
+    "VM_SIZES": { 
+      "Small": { 
+        "WVDsize": "Standard_B2ms"
+      },
+      "Medium": {
+        "WVDsize": "Standard_D4s_v4"
+      },
+      "Large": {
+        "WVDsize": "Standard_D8s_v4"
+      }
+    },
+    "License": {
+      "Server": {
+        "License": "Windows_Server"
+      },
+      "Client": {
+        "License": "Windows_Client"
+      },
+      "Multi": {
+        "License": "Windows_Client"
+      }
+    },
+    "VMName": "[concat(parameters('Prefix'),'-')]",
+    "subnetRef": "[concat(subscription().id,'/resourceGroups/',parameters('VnetRgName'),'/providers/Microsoft.Network/virtualNetworks/', parameters('VnetName'),'/subnets/', parameters('SubnetName'))]",
+   "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VnetName'), parameters('SubnetName'))]",     
+    "JoinUser": "[concat(parameters('JoinUsername'),'@',parameters('DomainFQDN'))]",
+    "fileUris": "https://raw.githubusercontent.com/DeanCefola/Azure-WVD/master/PowerShell/New-WVDSessionHost.ps1",
+    "UriFileNamePieces": "[split(variables('fileUris'), '/')]",
+    "firstFileNameString": "[variables('UriFileNamePieces')[sub(length(variables('UriFileNamePieces')), 1)]]",
+    "firstFileNameBreakString": "[split(variables('firstFileNameString'), '?')]",
+    "firstFileName": "[variables('firstFileNameBreakString')[0]]",
+    "Arguments": "[string(concat('-ProfilePath ', parameters('ProfilePath'), ' -RegistrationToken ', parameters('RegistrationToken'), ' -Optimize ', parameters('Optimize')))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('VMName'),parameters('VMNumber'),'-nic')]",
+      "apiVersion": "2018-10-01",
+      "Location": "[parameters('vmLocation')]",
+      "copy": {
+        "name": "WVDNic-Copy",
+        "count": "[parameters('Instance')]"
+      },
+      "tags": {
+        "costcode": "Omgeving",
+        "displayName": "WVD"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+            	"subnet": {
+                "id": "[variables('subnet1Ref')]"
+              },
+               "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+      ]
+
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('VMName'),parameters('VMNumber'))]",
+      "apiVersion": "2019-03-01",
+      "location": "[parameters('vmLocation')]",
+      "copy": {
+        "name": "WVD-Copy",
+        "count": "[parameters('Instance')]"
+      },
+      "tags": {
+        "costcode": "Omgeving",
+        "displayName": "WVD"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('VM_SIZES')[parameters('VMSize')].WVDsize]"
+        },
+        "storageProfile": {
+          "osDisk": {
+            "name": "[concat(variables('VMName'),parameters('VMNumber'),'-OSDisk')]",
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          },
+          "imageReference": {
+            "publisher": "[variables('VM_IMAGES')[parameters('OperatingSystem')].publisher]",
+            "offer": "[variables('VM_Images')[parameters('OperatingSystem')].offer]",
+            "sku": "[variables('VM_Images')[parameters('OperatingSystem')].sku]",
+            "version": "[variables('VM_Images')[parameters('OperatingSystem')].version]"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('VMName'),parameters('VMNumber'),'-nic'))]"
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('VMName'),parameters('VMNumber'))]",
+          "adminUsername": "[parameters('AdminUserName')]",
+          "adminPassword": "[parameters('AdminPassword')]",
+          "windowsConfiguration": {
+            "enableAutomaticUpdates": true,
+            "provisionVmAgent": true
+          }
+        },
+        "licenseType": "[variables('License')[parameters('OperatingSystem')].License]"
+      },
+      "zones": [
+        1
+      ],
+      "dependsOn": [
+        "WVDNic-Copy"
+      ]
+    },    
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('VMName'),parameters('VMNumber'), '/joinDomain')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('vmLocation')]",
+      "copy": {
+        "name": "JoinDomain-Copy",
+        "count": "[parameters('Instance')]"
+      },
+      "tags": {
+        "displayName": "Join Domain"
+      },
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "Name": "[parameters('DomainFQDN')]",
+          "OUPath": "[parameters('ouPath')]",
+          "User": "[variables('JoinUser')]",
+          "Restart": "true",
+          "Options": "3"
+        },
+        "protectedSettings": {
+          "Password": "[parameters('JoinPassword')]"
+        }
+      },
+      "dependsOn": [
+        "WVD-Copy"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('VMName'),parameters('VMNumber'),'/CustomScriptExtension')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('vmLocation')]",
+      "copy": {
+        "name": "Script-Copy",
+        "count": "[parameters('Instance')]"
+      },
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.9",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[variables('fileUris')]"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat ('powershell -ExecutionPolicy Unrestricted -File ', variables('firstFileName'), ' ', variables('arguments'))]"
+        }
+      },
+      "dependsOn": [
+        "JoinDomain-Copy"
+      ]
+    },
+        {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('VMName'),parameters('VMNumber'),'/MicrosoftMonitoringAgent')]",          
+          "apiVersion": "2015-06-15",
+          "location": "[parameters('vmLocation')]",
+	  "copy": {
+          "name": "LogAgent",
+          "count": "[parameters('Instance')]"
+	  },
+          "dependsOn": [
+            "Script-Copy"
+          ],
+          "properties": {
+            "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+            "type": "MicrosoftMonitoringAgent",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+            "workspaceId": "[parameters('workspaceId')]"
+	          },
+            "protectedSettings": {
+			  "workspaceKey": "[parameters('workspaceKey')]"
+            }
+          }
+        },
+	   {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('VMName'),parameters('VMNumber'),'/DependencyAgent')]",
+            "apiVersion": "2017-03-30",
+            "location": "[parameters('vmLocation')]",
+	  "copy": {
+          "name": "DependencyAgent",
+          "count": "[parameters('Instance')]"
+	  },
+          "dependsOn": [
+            "LogAgent"
+          ],            "properties": {
+                "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
+                "type": "DependencyAgentWindows",
+                "typeHandlerVersion": "9.3",
+                "autoUpgradeMinorVersion": true
+            }
+        }
+     
+  ],
+  "outputs": {
+
+  }
+}
